@@ -1,56 +1,31 @@
-# Welcome to your Expo app 👋
+# Bluetooth LE App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A classroom Bluetooth Low Energy app built with Expo SDK 57. Its Neo Brutalism design follows the supplied visual reference. The bottom tabs are **Devices** and **Lab**.
 
-## Get started
+## Assignment flow
 
-1. Install dependencies
+1. On **Devices**, scan for nearby BLE devices and connect. A successful connection opens **Lab** automatically.
+2. In **Lab**, tap **Read value** to read the characteristic for the first time.
+3. Enter your name and your buddy's name, then tap **Write value**. The app sends one UTF-8 value in the format “Your name, buddy name” and shows a success alert when the device accepts it.
+4. Tap **Read the prediction** to read the same characteristic again. The displayed result comes from the device; the app does not generate a grade.
+5. Capture screenshots of the results and submit them to Google Classroom. Tap **Disconnect** when finished.
 
-   ```bash
-   npm install
-   ```
+The app follows the supplied slides: scan, connect, discover services, then show Read, Write, and Disconnect controls. It scans all nearby BLE devices because some devices do not advertise their service UUID. The sample device may appear as “Mobile App 169”, but the name alone does not confirm its GATT configuration. Read and Write always target the assignment's fixed UUIDs. If a connected device does not expose them, the operation reports an error; the app cannot obtain the classroom value from another service. The UUIDs also appear at the bottom of the app.
 
-2. Start the app
+## UUIDs
 
-   ```bash
-   npx expo start
-   ```
+- Service: aee04821-1973-4e1f-a590-e84b10d580e7
+- Characteristic: cde07b1a-889b-44b7-a99f-c888dddac729
 
-In the output, you'll find options to open the app in a
+## Run on a phone
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+This project uses react-native-ble-plx, which requires native code. Install an Android or iOS build of this app on a physical phone; Expo Go cannot run its BLE features.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+    npm install
+    npm run android
 
-## Get a fresh project
+The Android command requires the Android SDK and a connected phone with USB debugging enabled. On macOS, use Xcode and npm run ios for an iPhone build. After a development build is installed, npm start can start Metro for later code changes.
 
-When you're ready, run:
+Android 12 and newer request Bluetooth Scan and Connect permissions. Older Android versions request Location permission for BLE scanning. The app does not use scan results to determine location.
 
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-### Other setup steps
-
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+The app warns when the name payload is longer than 20 bytes because some peripherals may reject longer writes. Actual BLE behavior and the predicted grade can only be verified when the classroom device is available.
